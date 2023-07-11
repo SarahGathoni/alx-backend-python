@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import asyncio
 from 0-basic_async_syntax.py import wait_random
 
@@ -13,9 +14,12 @@ async def wait_n(n: int, max_delay: int) -> list[float]:
         list[float]: The list of delays (float values) in ascending order.
 
     """
-    coroutines = [wait_random(max_delay) for _ in range(n)]
-    completed_tasks, _ = await asyncio.wait(coroutines)
-    delays = [task.result() for task in completed_tasks]
-    delays.sort()
-    return delays
+    delays: List[float] = []
+    all_delays: List[float] = []
+    for i in range(n):
+        delays.append(wait_random(max_delay))
+    for delay in asyncio.as_completed(delays):
+    prior_result = await delay
+        all_delays.append(prior_result)
+    return all_delays
 
